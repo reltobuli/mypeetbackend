@@ -25,6 +25,7 @@ class MissingPetController extends Controller
                 'address' => 'required|string',
                 'qrcode' => 'required|string',
                 'picture' => 'required|image',
+                'user_id'=>'required|string',
             ]);
 
             // Store the uploaded image in the 'public/pictures' directory
