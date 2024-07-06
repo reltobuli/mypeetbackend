@@ -13,8 +13,8 @@ class VeterinaryController extends Controller
 {
     public function index()
     {
-        $veterinaryCenters = VeterinaryCenter::all();
-        return view('admin.veterinary', compact('veterinaryCenters'));
+        $veterinaryCenter = VeterinaryCenter::all();
+        return response()->json($veterinaryCenter);
     }
 
     public function store(Request $request)
@@ -25,7 +25,7 @@ class VeterinaryController extends Controller
             'rating' => 'required|numeric|min:0|max:5',
         ]);
 
-        VeterinaryCenter::create([
+        Veterinary::create([
             'name' => $request->name,
             'location' => $request->location,
             'rating' => $request->rating,

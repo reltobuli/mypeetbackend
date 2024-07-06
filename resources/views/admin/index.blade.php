@@ -8,7 +8,7 @@
             <div class="card">
                 <div class="card-body">
                     <h3>Manage Instruction List for Street Animals</h3>
-                    <a href="{{ route('admin.instructions') }}" class="btn btn-primary">Manage Instructions</a>
+                    <a href="{{ route('admin.instructions.index') }}" class="btn btn-primary">Manage Instructions</a>
                 </div>
             </div>
             <div class="card mt-3">
