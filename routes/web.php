@@ -5,6 +5,10 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\InstructionController;
 
+
+
+
+
 Route::prefix('admin')->group(function () {
     Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
     Route::post('login', [AdminAuthController::class, 'login'])->name('admin.login.submit');

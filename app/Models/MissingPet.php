@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class MissingPet extends Model
 {
-    protected $table = 'missing_pets'; // Specify the table name
+    protected $table = 'missingpets'; // Specify the table name
 
     protected $fillable = [
         'picture',

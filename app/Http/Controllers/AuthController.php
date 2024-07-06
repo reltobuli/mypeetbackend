@@ -6,7 +6,7 @@ use Illuminate\Http\Request; // Correct import for Request
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use App\Models\PetOwner;
+use App\Models\Petowner;
 
 class AuthController extends Controller
 {

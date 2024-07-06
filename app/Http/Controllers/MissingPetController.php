@@ -17,14 +17,15 @@ class MissingPetController extends Controller
 
         try {
             $request->validate([
+                'picture' => 'required|image',
                 'name' => 'required|string',
                 'type' => 'required|string',
                 'gender' => 'required|string',
                 'age' => 'required|string',
                 'color' => 'required|string',
                 'address' => 'required|string',
+                'pet_id'=>'required|string',
                 'qrcode' => 'required|string',
-                'picture' => 'required|image',
                 
             ]);
 
@@ -33,14 +34,15 @@ class MissingPetController extends Controller
 
             // Create a new MissingPet record
             $missingPet = MissingPet::create([
+                'picture' => $picturePath,
                 'name' => $request->name,
                 'type' => $request->type,
                 'gender' => $request->gender,
                 'age' => $request->age,
                 'color' => $request->color,
                 'address' => $request->address,
+                'pet_id'=> $request->pet_id,
                 'qrcode' => $request->qrcode,
-                'picture' => $picturePath,
             ]);
 
             Log::info('Pet reported successfully');

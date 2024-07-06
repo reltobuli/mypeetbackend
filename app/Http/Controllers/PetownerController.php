@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Petowner;
+use App\Models\Pet;
+
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,29 +19,51 @@ class PetownerController extends Controller
 
     public function update(Request $request)
     {
-        $user = auth('Petowner-api')->user();
-
-        $request->validate([
-            'fullname' => 'required|string|max:255',
-            'phone_number' => 'required|string|max:20',
-            'date_of_birth' => 'required|date',
-            'gender' => 'required|string|in:male,female',
-            'email' => 'required|string|email|max:255',
-            'city' => 'required|string|max:255',
-            'password' => 'nullable|string|max:255',
-        ]);
-
-        // Update user details
-        $user->update($request->all());
-
-        return response()->json(['message' => 'Profile updated successfully', 'user' => $user]);
+        try {
+            $user = auth('Petowner-api')->user();
+    
+            $request->validate([
+                'fullname' => 'required|string|max:255',
+                'phone_number' => 'required|string|max:20',
+                'date_of_birth' => 'required|date',
+                'gender' => 'required|string|in:male,female',
+                'email' => 'required|string|email|max:255',
+                'city' => 'required|string|max:255',
+                'password' => 'nullable|string|max:255',
+            ]);
+    
+            // Log the received request data for debugging
+            \Log::info('Request data:', $request->all());
+    
+            // Update user details
+            $user->fullname = $request->input('fullname');
+            $user->phone_number = $request->input('phone_number');
+            $user->date_of_birth = $request->input('date_of_birth');
+            $user->gender = $request->input('gender');
+            $user->email = $request->input('email');
+            $user->city = $request->input('city');
+    
+            if ($request->has('password')) {
+                $user->password = bcrypt($request->input('password'));
+            }
+    
+            $user->save();
+    
+            // Log the updated user data for debugging
+            \Log::info('Updated user data:', $user);
+    
+            return response()->json(['message' => 'Profile updated successfully', 'user' => $user]);
+        } catch (\Exception $e) {
+            // Log any exceptions for debugging
+            \Log::error('Exception caught: ' . $e->getMessage());
+            return response()->json(['error' => 'An error occurred while updating profile'], 500);
+        }
     }
-
     // Other methods...
 
 
 
-    public function addPet(Request $request)
+    public function AddPet(Request $request)
     {
         // Validate incoming request data
         $validatedData = $request->validate([
