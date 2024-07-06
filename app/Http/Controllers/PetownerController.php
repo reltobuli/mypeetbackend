@@ -14,7 +14,7 @@ class PetownerController extends Controller
     public function profile()
     {
         $user = auth('Petowner-api')->user();
-        return response()->json(['user' => $user]);
+    return response()->json(['user' => $user]);
     }
 
     public function update(Request $request)
