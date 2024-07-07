@@ -20,16 +20,20 @@
                 <input type="text" id="name" name="name" value="{{ isset($veterinaryCenter) ? $veterinaryCenter->name : old('name') }}" required>
             </div>
             <div class="form-group">
-                <label for="address">Address:</label>
-                <input type="text" id="address" name="address" value="{{ isset($veterinaryCenter) ? $veterinaryCenter->address : old('address') }}" required>
+                <label for="phone_number">Phone:</label>
+                <input type="text" id="phone_number" name="phone_number" value="{{ isset($veterinaryCenter) ? $veterinaryCenter->phone_number : old('phone_number') }}" required>
             </div>
             <div class="form-group">
-                <label for="phone_number">Phone Number:</label>
-                <input type="text" id="phone_number" name="phone_number" value="{{ isset($veterinaryCenter) ? $veterinaryCenter->phone_number : old('phone_number') }}" required>
+                <label for="rating">Rating:</label>
+                <input type="integer" id="rating" name="rating" value="{{ isset($veterinaryCenter) ? $veterinaryCenter->rating : old('rating') }}" required>
             </div>
             <div class="form-group">
                 <label for="city">City:</label>
                 <input type="text" id="city" name="city" value="{{ isset($veterinaryCenter) ? $veterinaryCenter->city : old('city') }}" required>
+            </div>
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <input type="text" id="address" name="address" value="{{ isset($veterinaryCenter) ? $veterinaryCenter->address : old('address') }}" required>
             </div>
             <button type="submit" class="button">{{ isset($veterinaryCenter) ? 'Update' : 'Add' }} Veterinary Center</button>
         </form>

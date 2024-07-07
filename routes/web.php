@@ -19,12 +19,12 @@ Route::prefix('admin')->middleware(['auth:admin-web'])->group(function () {
     Route::get('/admin/profile', [AdminController::class, 'profile'])->name('admin.profile');
     Route::put('/admin/profile', [AdminController::class, 'updateProfile'])->name('admin.profile.update');
     Route::get('/index', [AdminController::class, 'index'])->name('admin.index');
-    Route::get('/instructions', [InstructionController::class, 'index'])->name('admin.instructions');
-    Route::post('/instructions', [InstructionController::class, 'store'])->name('admin.instructions.store');
-    Route::get('/instructions/{id}/edit', [InstructionController::class, 'edit'])->name('admin.instructions.edit');
-    Route::put('/instructions/{id}', [InstructionController::class, 'update'])->name('admin.instructions.update');
-    Route::delete('/instructions/{id}', [InstructionController::class, 'destroy'])->name('admin.instructions.delete');
-    
+    Route::post('instructions/store', [InstructionController::class, 'store'])->name('admin.instructions.store');
+    Route::get('instructions/{id}/edit', [InstructionController::class, 'edit'])->name('admin.instructions.edit');
+    Route::put('instructions/{id}', [InstructionController::class, 'update'])->name('admin.instructions.update');
+    Route::delete('instructions/{id}', [InstructionController::class, 'destroy'])->name('admin.instructions.delete');
+    Route::get('instructions', [InstructionController::class, 'index'])->name('admin.instructions.index');
+
     Route::get('/shelters', [AdminController::class, 'shelters'])->name('admin.shelters');
     Route::post('/shelters', [AdminController::class, 'storeShelter'])->name('admin.shelters.store');
     Route::get('/shelters/{id}/edit', [AdminController::class, 'editShelter'])->name('admin.shelters.edit');

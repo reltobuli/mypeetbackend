@@ -7,22 +7,17 @@ use App\Models\Instruction;
 
 class InstructionController extends Controller
 {
-
     public function indexapi()
-    {
-        $instructions = Instruction::all();
-        return response()->json($instructions);
-    }
-
-
-
-
-    public function index()
     {
         $instructions = Instruction::all();
         return view('admin.instructions.index', compact('instructions'));
     }
+    public function index()
+    {
+        $instructions = Instruction::all(); // Fetch all instructions from the database
 
+        return view('admin.instructions.index', compact('instructions'));
+    }
     public function store(Request $request)
     {
         $request->validate([
@@ -36,10 +31,10 @@ class InstructionController extends Controller
     }
 
     public function edit($id)
-    {
-        $instruction = Instruction::findOrFail($id);
-        return view('admin.instructions.edit', compact('instruction'));
-    }
+{
+    $instruction = Instruction::findOrFail($id);
+    return view('admin.instructions.edit', compact('instruction')); // Pass only $instruction, not $instructions
+}
 
     public function update(Request $request, $id)
     {

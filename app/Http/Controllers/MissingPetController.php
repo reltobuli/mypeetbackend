@@ -9,6 +9,12 @@ use App\Models\MissingPet;
 
 class MissingPetController extends Controller
 {
+
+    public function index()
+    {
+        $missingPets = MissingPet::all();
+        return response()->json(['missingPets' => $missingPets]);
+    }
     public function reportMissingPet(Request $request)
     {
         $validator = Validator::make($request->all(), [

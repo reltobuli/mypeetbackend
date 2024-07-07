@@ -49,8 +49,8 @@ return [
             'provider' => 'admins',
         ],
        
-        'admin-api' => [
-            'driver' => 'sanctum',
+        'admin-web' => [
+            'driver' => 'session',
             'provider' => 'admins',
         ],
         'Petowner-api' => [
