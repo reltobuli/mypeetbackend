@@ -22,8 +22,12 @@ class Pet extends Model
         'is_missing',
        
     ];
-    public function user()
+
+   
+    
+    public function owner()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
-}
+    }
+    

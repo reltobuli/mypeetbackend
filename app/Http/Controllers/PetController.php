@@ -78,6 +78,7 @@ class PetController extends Controller
      {
          // Validate the incoming request data
          $validatedData = $request->validate([
+            'user_id'=>'required|string|max:255',
              'picture' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
              'name' => 'required|string|max:255',
              'type' => 'required|string|max:255',

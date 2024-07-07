@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\Auth;
 
 class PetownerController extends Controller
 {
+    public function pets()
+    {
+        return $this->hasMany(Pet::class);
+    }
     public function profile()
     {
         $user = auth('Petowner-api')->user();
@@ -61,43 +65,42 @@ class PetownerController extends Controller
     // Other methods...
 
 
-
     public function AddPet(Request $request)
     {
-        // Validate incoming request data
-        $validatedData = $request->validate([
-            'picture' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        // Validate request
+        $request->validate([
+            'user_id' => 'required|integer',
             'name' => 'required|string|max:255',
             'type' => 'required|string|max:255',
             'gender' => 'required|string|max:255',
-            'age' => 'required|integer',
+            'age' => 'required|string|max:255',
             'color' => 'required|string|max:255',
-            'address'=>'required|string|max:255',
-           
+            'address' => 'required|string|max:255',
+            'picture' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-
-        $pet = new Pet();
-        $pet->picture = 'default.jpg';
-        $pet->name = $validatedData['name'];
-        $pet->type = $validatedData['type'];
-        $pet->age = $validatedData['age'];
-        $pet->gender = $validatedData['gender'];
-        $pet->age = $validatedData['age'];
-        $pet->color = $validatedData['color'];
-        $pet->address = $validatedData['address'];
-      
-        $pet->save();
-
-        $validatedData['petowner_id'] = auth('Petowner-api')->id();
-        // Handle the picture upload if included in request
+    
+        // Handle the file upload
         if ($request->hasFile('picture')) {
-            $picturePath = $request->file('picture')->store('pictures', 'public');
-            $validatedData['picture'] = $picturePath;
+            $file = $request->file('picture');
+            $path = $file->store('public/pictures');
+            $fileName = basename($path);
+        } else {
+            return response()->json(['message' => 'Picture not uploaded'], 400);
         }
-        // Create a new pet record in the database
-        $pet = Pet::create($validatedData);
-        // Return a JSON response with the newly created pet data
-        return response()->json($pet, 201);
+    
+        // Create new pet record
+        $pet = new Pet();
+        $pet->user_id = $request->input('user_id');
+        $pet->name = $request->input('name');
+        $pet->type = $request->input('type');
+        $pet->gender = $request->input('gender');
+        $pet->age = $request->input('age');
+        $pet->color = $request->input('color');
+        $pet->address = $request->input('address');
+        $pet->picture = $fileName;
+        $pet->save();
+    
+        return response()->json(['message' => 'Pet added successfully'], 201);
     }
     public function edit()
     {
