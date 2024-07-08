@@ -20,9 +20,12 @@ class Pet extends Model
         'address',
         'qrcode',
         'is_missing',
+       ' adoption_status',
        
     ];
-
+    const ADOPTION_PENDING = 'pending';
+    const ADOPTION_AVAILABLE = 'available';
+    const ADOPTION_ADOPTED = 'adopted';
    
     
     public function owner()

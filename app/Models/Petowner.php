@@ -9,6 +9,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class Petowner extends Authenticatable
 {
+    
     use HasFactory, Notifiable, HasApiTokens;
 
  

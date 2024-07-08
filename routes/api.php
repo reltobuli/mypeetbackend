@@ -9,6 +9,10 @@ use App\Http\Controllers\PetController;
 use App\Http\Controllers\QRCodeController;
 use App\Http\Controllers\InformationController;
 use App\Http\Controllers\InstructionController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\AdoptionRequestController;
+
+
 
 // Instruction Routes
 Route::get('/missing-pets', [MissingPetController::class, 'index']);
@@ -29,15 +33,16 @@ Route::group(['prefix' => 'Petowner'], function () {
         Route::get('profile', [PetownerController::class, 'profile']); // Route to fetch profile
         Route::put('profile/update', [PetownerController::class, 'update']); // Route to update profile
         Route::post('add-pet', [PetownerController::class, 'addPet']);
-        Route::post('report-missing-pet', [MissingPetController::class, 'reportMissingPet']); // Corrected controller reference
+        Route::post('report-missing-pet', [MissingPetController::class, 'reportMissingPet']); 
+        Route::get('adoptions', [AdoptionController::class, 'index']);
+        Route::get('/notifications', [NotificationController::class, 'index']);
+ // Corrected controller reference
     });
 
     // Adoption Routes
-    Route::get('adoptions', [AdoptionController::class, 'index']);
-    Route::post('adoptions/{id}/request', [AdoptionController::class, 'requestAdoption']);
-    Route::post('adoptions/{id}/approve', [AdoptionController::class, 'approveAdoption']);
-    Route::post('adoptions/{id}/reject', [AdoptionController::class, 'rejectAdoption']);
+   
 });
+
 
 // Pet Routes
 Route::middleware('auth:sanctum')->group(function () {
@@ -47,7 +52,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('pets/{id}', [PetController::class, 'update']);
     Route::delete('pets/{id}', [PetController::class, 'destroy']);
     Route::post('pets/{id}/report-missing', [PetController::class, 'reportMissing']);
-    Route::post('pets/{id}/give-up', [PetController::class, 'giveUpPet']);
+    Route::post('/pets/{id}/give-up', [PetController::class, 'giveUpPet']);
+    Route::get('/pets/adoptable', [PetController::class, 'getAdoptablePets']);
+    Route::post('/pets/{id}/request-adoption', [PetController::class, 'requestAdoption']);
+    Route::post('/adoption-requests/{id}/accept', [AdoptionRequestController::class, 'acceptRequest']);
+    Route::post('/adoption-requests/{id}/reject', [AdoptionRequestController::class, 'rejectRequest']);
 });
 
 // Report Routes

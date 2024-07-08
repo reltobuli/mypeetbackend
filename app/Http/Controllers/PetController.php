@@ -108,7 +108,33 @@ class PetController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-   
+    public function giveUpPet($id)
+    {
+        $pet = Pet::findOrFail($id);
+        $pet->adoption_status = Pet::ADOPTION_AVAILABLE;
+        $pet->save();
 
-    // You can add more methods here for other actions related to pet owners
+        return response()->json(['message' => 'Pet is now available for adoption.']);
+    }
+
+    public function getAdoptablePets()
+    {
+        $pets = Pet::where('adoption_status', Pet::ADOPTION_AVAILABLE)->get();
+        return response()->json($pets);
+    }
+
+    public function requestAdoption($id)
+    {
+        $pet = Pet::findOrFail($id);
+        $pet->adoption_status = Pet::ADOPTION_PENDING;
+        $pet->save();
+
+        // Notify the pet owner
+        $petOwner = $pet->owner; // Assuming there's a relationship defined
+        $requester = auth()->user();
+        $petOwner->notify(new AdoptionRequestNotification($pet, $requester));
+
+        return response()->json(['message' => 'Adoption request sent.']);
+    }
+
 }
