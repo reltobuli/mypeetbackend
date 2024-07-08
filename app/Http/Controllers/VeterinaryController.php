@@ -15,6 +15,7 @@ class VeterinaryController extends Controller
     {
         $veterinaryCenter = VeterinaryCenter::all();
         return response()->json($veterinaryCenter);
+      
     }
 
     public function store(Request $request)

@@ -12,12 +12,13 @@ use App\Http\Controllers\InstructionController;
 
 // Instruction Routes
 Route::get('/missing-pets', [MissingPetController::class, 'index']);
-Route::get('/api/instructions', [InstructionController::class, 'indexapi']);
+Route::get('instructions', [InstructionController::class, 'showInstructions']);
 Route::get('/qrcode', [QRCodeController::class, 'generate']);
 Route::get('/pets/{id}', [PetController::class, 'show'])->name('pets.show');
 Route::get('shelters', [InformationController::class, 'listShelters']);
 Route::get('veterinaries', [InformationController::class, 'listVeterinaries']);
-Route::get('shelters', [InformationController::class, 'listShelters']);
+
+
 // Petowner Routes
 Route::group(['prefix' => 'Petowner'], function () {
     Route::post('register', [AuthController::class, 'register']);

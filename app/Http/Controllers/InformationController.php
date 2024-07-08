@@ -23,7 +23,7 @@ class InformationController extends Controller
 
     public function listVeterinaries()
     {
-        $veterinaries = Veterinary::all();
+        $veterinaries = VeterinaryCenter::all(); // Ensure the model name matches your actual model
         return response()->json($veterinaries);
     }
 }

@@ -7,10 +7,10 @@ use App\Models\Instruction;
 
 class InstructionController extends Controller
 {
-    public function indexapi()
+    public function showInstructions()
     {
         $instructions = Instruction::all();
-        return view('admin.instructions.index', compact('instructions'));
+        return response()->json($instructions);
     }
     public function index()
     {
