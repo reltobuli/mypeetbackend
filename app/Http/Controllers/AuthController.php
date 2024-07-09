@@ -46,9 +46,14 @@ class AuthController extends Controller
         if (Auth::guard('Petowner')->attempt($credentials)) {
             $petowner = Auth::guard('Petowner')->user();
             $token = $petowner->createToken('auth_token')->plainTextToken;
-
-            return response()->json(['message' => 'Login successful', 'token' => $token], 200);
+        
+            return response()->json([
+                'message' => 'Login successful',
+                'token' => $token,
+                'user' => $petowner, // Include user details here
+            ], 200);
         }
+        
 
         return response()->json(['message' => 'Invalid credentials'], 401);
     }

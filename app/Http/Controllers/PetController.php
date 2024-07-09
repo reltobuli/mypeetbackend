@@ -5,109 +5,114 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Pet;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Auth; // Ensure this import is correct
 
 class PetController extends Controller
 {
-    /**
-     * Display the authenticated pet owner's profile.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
+    public function getPets(Request $request)
+    {
+        $pets = Pet::where('user_id', $request->user()->id)->get();
+        return response()->json(['pets' => $pets], 200);
+    }
     public function show($id)
     {
-        $pet = Pet::findOrFail($id);
-        return response()->json($pet);
+        $pet = Pet::find($id);
+
+        if ($pet) {
+            return response()->json($pet, 200);
+        } else {
+            return response()->json(['message' => 'Pet not found'], 404);
+        }
     }
-    public function profile()
+    public function getPetsForCurrentUser()
     {
-        $user = auth('Petowner-api')->user();
-        return response()->json(['user' => $user]);
+        try {
+            $user = Auth::guard('Petowner-api')->user(); // Retrieve authenticated user
+            if (!$user) {
+                return response()->json(['error' => 'User not authenticated'], 401);
+            }
+
+            $pets = $user->pets; // Fetch pets associated with the user
+
+            return response()->json(['pets' => $pets], 200);
+        } catch (\Exception $e) {
+            Log::error('Error fetching pets for current user: ' . $e->getMessage());
+            return response()->json(['error' => 'An error occurred while fetching pets'], 500);
+        }
     }
 
-    /**
-     * Update the authenticated pet owner's profile.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function update(Request $request)
-    {
-        $user = auth('Petowner-api')->user();
+   
 
-        $request->validate([
-            'fullname' => 'required|string|max:255',
-            'phone_number' => 'required|string|max:20',
-            'date_of_birth' => 'required|date',
-            'gender' => 'required|string|in:male,female',
-            'email' => 'required|string|email|max:255',
-            'city' => 'required|string|max:255',
-            'password' => 'required|string|max:255',
+   
+
+    public function update(Request $request, $id)
+{
+    try {
+        // Validate request data
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'type' => 'required|string|max:255',
+            'gender' => 'required|string|max:255',
+            'age' => 'required|integer',
+            'color' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
         ]);
 
-        $user->update($request->all());
+        // Find the pet
+        $pet = Pet::find($id);
 
-        return response()->json(['message' => 'Profile updated successfully', 'user' => $user]);
+        if (!$pet) {
+            return response()->json(['error' => 'Pet not found'], 404);
+        }
+
+        // Update pet details
+        $pet->name = $validatedData['name'];
+        $pet->type = $validatedData['type'];
+        $pet->gender = $validatedData['gender'];
+        $pet->age = $validatedData['age'];
+        $pet->color = $validatedData['color'];
+        $pet->address = $validatedData['address'];
+        $pet->save();
+
+        return response()->json(['message' => 'Pet profile updated successfully', 'pet' => $pet], 200);
+    } catch (ValidationException $e) {
+        return response()->json(['error' => $e->errors()], 422);
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Failed to update pet profile'], 500);
     }
+}
 
-    /**
-     * Show the edit form for the authenticated pet owner's profile.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
+
     public function edit()
     {
         $user = auth('Petowner-api')->user();
         return response()->json(['user' => $user]);
     }
 
-    /**
-     * Update the authenticated pet owner's profile.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-   
+    public function addPet(Request $request)
+    {
+        $validatedData = $request->validate([
+            'user_id' => 'required|integer',
+            'picture' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'name' => 'required|string|max:255',
+            'type' => 'required|string|max:255',
+            'gender' => 'required|string|max:255',
+            'age' => 'required|integer',
+            'color' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+        ]);
 
-    /**
-     * Show the edit form for the authenticated pet owner's profile.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-  
-     public function addPet(Request $request)
-     {
-         // Validate the incoming request data
-         $validatedData = $request->validate([
-            'user_id'=>'required|string|max:255',
-             'picture' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-             'name' => 'required|string|max:255',
-             'type' => 'required|string|max:255',
-             'gender' => 'required|string|max:255',
-             'age' => 'required|integer',
-             'color' => 'required|string|max:255',
-             'address'=>'required|string|max:255',
-          
-         
-         ]);
-     
-         // Handle the picture upload if it's included in the request
-         if ($request->hasFile('picture')) {
-             $picturePath = $request->file('picture')->store('pictures', 'public');
-             $validatedData['picture'] = $picturePath;
-         }
-     
-         // Create a new pet record in the database
-         $pet = Pet::create($validatedData);
-     
-         // Return a JSON response with the newly created pet data
-         return response()->json($pet, 201);
-     }
-    /**
-     * Add a pet for the authenticated pet owner.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
-     */
+        if ($request->hasFile('picture')) {
+            $picturePath = $request->file('picture')->store('pictures', 'public');
+            $validatedData['picture'] = $picturePath;
+        }
+
+        $pet = Pet::create($validatedData);
+
+        return response()->json($pet, 201);
+    }
+
     public function giveUpPet($id)
     {
         $pet = Pet::findOrFail($id);
@@ -117,24 +122,34 @@ class PetController extends Controller
         return response()->json(['message' => 'Pet is now available for adoption.']);
     }
 
+    // PetController.php
+
     public function getAdoptablePets()
     {
-        $pets = Pet::where('adoption_status', Pet::ADOPTION_AVAILABLE)->get();
-        return response()->json($pets);
+        try {
+            $adoptablePets = Pet::where('adoption_status', Pet::ADOPTION_AVAILABLE)->get();
+    
+            if ($adoptablePets->isEmpty()) {
+                return response()->json(['message' => 'No adoptable pets found'], 404);
+            }
+    
+            return response()->json(['pets' => $adoptablePets], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to fetch adoptable pets'], 500);
+        }
     }
-
     public function requestAdoption($id)
     {
         $pet = Pet::findOrFail($id);
         $pet->adoption_status = Pet::ADOPTION_PENDING;
         $pet->save();
 
-        // Notify the pet owner
-        $petOwner = $pet->owner; // Assuming there's a relationship defined
+        $petOwner = $pet->owner;
         $requester = auth()->user();
         $petOwner->notify(new AdoptionRequestNotification($pet, $requester));
 
         return response()->json(['message' => 'Adoption request sent.']);
     }
-
 }
+
+

@@ -14,7 +14,7 @@ class AddAdoptionStatusToPetsTable extends Migration
     public function up()
     {
         Schema::table('pets', function (Blueprint $table) {
-            $table->string('adoption_status')->default('available');
+            $table->string('adoption_status')->default('unavailable');
         });
     }
 

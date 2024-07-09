@@ -10,61 +10,60 @@ use App\Http\Controllers\QRCodeController;
 use App\Http\Controllers\InformationController;
 use App\Http\Controllers\InstructionController;
 use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\AdoptionRequestController;
+use App\Http\Controllers\PetIDController;
 
 
 
-// Instruction Routes
+
+// public Routes
+
 Route::get('/missing-pets', [MissingPetController::class, 'index']);
 Route::get('instructions', [InstructionController::class, 'showInstructions']);
 Route::get('/qrcode', [QRCodeController::class, 'generate']);
-Route::get('/pets/{id}', [PetController::class, 'show'])->name('pets.show');
 Route::get('shelters', [InformationController::class, 'listShelters']);
 Route::get('veterinaries', [InformationController::class, 'listVeterinaries']);
 
 
+Route::middleware('auth:Petowner-api')->get('/pets/user', [PetController::class, 'getPetsForCurrentUser']);
 // Petowner Routes
-Route::group(['prefix' => 'Petowner'], function () {
+    Route::group(['prefix' => 'Petowner'], function () {
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
 
     Route::group(['middleware' => ['auth:Petowner-api']], function () {
         Route::post('logout', [AuthController::class, 'logout']);
         Route::get('profile', [PetownerController::class, 'profile']); // Route to fetch profile
-        Route::put('profile/update', [PetownerController::class, 'update']); // Route to update profile
+        Route::put('profile/update', [PetownerController::class, 'updateProfile']); // Route to update profile
         Route::post('add-pet', [PetownerController::class, 'addPet']);
         Route::post('report-missing-pet', [MissingPetController::class, 'reportMissingPet']); 
-        Route::get('adoptions', [AdoptionController::class, 'index']);
         Route::get('/notifications', [NotificationController::class, 'index']);
- // Corrected controller reference
+        Route::post('pets', [PetController::class, 'store']);
+        Route::get('pets/user/{userId}', [PetController::class, 'getPetByUserId']);
+        Route::get('/pets', [PetController::class, 'getPets']);
+        Route::put('/pets/profile/update/{id}', [PetController::class, 'update']);
+        Route::get('pets/{id}', [PetController::class, 'show'])->name('pets.show');
+        Route::get('adoptions', [AdoptionController::class, 'index']);
+        Route::post('/pets/{id}/give-up', [PetController::class, 'giveUpPet']);
+        Route::get('/pets/adoptable', [PetController::class, 'getAdoptablePets']);      
+          Route::post('/pets/{id}/request-adoption', [PetController::class, 'requestAdoption']);
+        Route::post('/adoption-requests/{id}/accept', [AdoptionController::class, 'acceptRequest']);
+        Route::post('/adoption-requests/{id}/reject', [AdoptionController::class, 'rejectRequest']);
+        
+
     });
 
-    // Adoption Routes
    
 });
 
 
 // Pet Routes
-Route::middleware('auth:sanctum')->group(function () {
-    Route::get('pets', [PetController::class, 'index']);
-    Route::get('/pets/{id}', [PetController::class, 'show'])->name('pets.show');
-    Route::post('pets', [PetController::class, 'store']);
-    Route::put('pets/{id}', [PetController::class, 'update']);
-    Route::delete('pets/{id}', [PetController::class, 'destroy']);
-    Route::post('pets/{id}/report-missing', [PetController::class, 'reportMissing']);
-    Route::post('/pets/{id}/give-up', [PetController::class, 'giveUpPet']);
-    Route::get('/pets/adoptable', [PetController::class, 'getAdoptablePets']);
-    Route::post('/pets/{id}/request-adoption', [PetController::class, 'requestAdoption']);
-    Route::post('/adoption-requests/{id}/accept', [AdoptionRequestController::class, 'acceptRequest']);
-    Route::post('/adoption-requests/{id}/reject', [AdoptionRequestController::class, 'rejectRequest']);
-});
+
 
 // Report Routes
 Route::post('report/found-pet', [MissingPetController::class, 'reportFoundPet']); // Corrected controller reference
 Route::post('report/scan-tag', [MissingPetController::class, 'scanTag']); // Corrected controller reference
 Route::post('report/search-missing-pets', [MissingPetController::class, 'searchMissingPets']); // Corrected controller reference
 
-// Information Routes
 
 
 // Fallback Route
