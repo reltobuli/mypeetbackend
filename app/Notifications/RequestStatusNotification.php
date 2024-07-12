@@ -3,17 +3,19 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class AdoptionRequestNotification extends Notification
+class RequestStatusNotification extends Notification
 {
     protected $adoptionRequest;
+    protected $status;
 
-    public function __construct($adoptionRequest)
+    public function __construct($adoptionRequest, $status)
     {
         $this->adoptionRequest = $adoptionRequest;
+        $this->status = $status;
     }
 
     public function via($notifiable)
@@ -26,8 +28,8 @@ class AdoptionRequestNotification extends Notification
         return [
             'adoption_request_id' => $this->adoptionRequest->id,
             'pet_name' => $this->adoptionRequest->pet->name,
-            'message' => $this->adoptionRequest->message,
-            'adopter_id' => $this->adoptionRequest->user_id,
+            'message' => 'Your adoption request has been ' . $this->status,
+            'status' => $this->status,
         ];
     }
 
@@ -36,10 +38,8 @@ class AdoptionRequestNotification extends Notification
         return [
             'adoption_request_id' => $this->adoptionRequest->id,
             'pet_name' => $this->adoptionRequest->pet->name,
-            'message' => $this->adoptionRequest->message,
-            'adopter_id' => $this->adoptionRequest->user_id,
+            'message' => 'Your adoption request has been ' . $this->status,
+            'status' => $this->status,
         ];
     }
-
-    
 }

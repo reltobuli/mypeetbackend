@@ -33,10 +33,29 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-            'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        ],
+        \Illuminate\Foundation\Http\Middleware\VerifyRequestSignature::class,
+        \App\Http\Middleware\EncryptCookies::class,
+        \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+        \Illuminate\Session\Middleware\StartSession::class,
+        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        \App\Http\Middleware\VerifyCsrfToken::class,
+        \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        \App\Http\Middleware\TrustProxies::class,
+        \Illuminate\Http\Middleware\ValidatePostSize::class,
+        \App\Http\Middleware\TrimStrings::class,
+        \App\Http\Middleware\TrustHosts::class,
+        \App\Http\Middleware\CheckForMaintenanceMode::class,
+        \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
+        \Fruitcake\Cors\HandleCors::class,
+        \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        \Illuminate\Auth\Middleware\Authenticate::class,
+        \App\Http\Middleware\AuthenticatePetownerApi::class,
+        \App\Http\Middleware\HandleInertiaRequests::class,
+        \Illuminate\Translation\Middleware\SetLocale::class,
+        \Barryvdh\Cors\HandleCors::class,
+    ],
     ];
 
 

@@ -26,10 +26,10 @@ class Pet extends Model
     const ADOPTION_AVAILABLE = 'available';
     const ADOPTION_ADOPTED = 'adopted';
 
-    // Relationship with the User model (pet owner)
+    // Relationship with the Petowner model
     public function owner()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(Petowner::class, 'user_id');
     }
 
     // Example method: Scope to retrieve pets with a specific adoption status
@@ -37,5 +37,10 @@ class Pet extends Model
     {
         return $query->where('adoption_status', $status);
     }
+    public function adoptionRequests()
+{
+    return $this->hasMany(AdoptionRequest::class);
 }
+}
+
     

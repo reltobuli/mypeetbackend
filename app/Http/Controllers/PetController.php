@@ -3,18 +3,30 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Pet;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\Auth; // Ensure this import is correct
+use App\Models\Pet;
+use App\Models\Petowner;
+use App\Models\AdoptionRequest;
+use App\Notifications\AdoptionRequestNotification;
+use Illuminate\Support\Facades\Notification;
 
 class PetController extends Controller
 {
-    public function getPets(Request $request)
+    public function index()
     {
-        $pets = Pet::where('user_id', $request->user()->id)->get();
-        return response()->json(['pets' => $pets], 200);
+        $pets = Pet::all();
+        return response()->json(['pets' => $pets]);
     }
+
+    public function getPets()
+    {
+        $pets = Pet::all(); // Example logic to fetch pets
+        return response()->json(['pets' => $pets]);
+    }
+
+
     public function show($id)
     {
         $pet = Pet::find($id);
@@ -25,6 +37,7 @@ class PetController extends Controller
             return response()->json(['message' => 'Pet not found'], 404);
         }
     }
+
     public function getPetsForCurrentUser()
     {
         try {
@@ -42,47 +55,42 @@ class PetController extends Controller
         }
     }
 
-   
-
-   
-
     public function update(Request $request, $id)
-{
-    try {
-        // Validate request data
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'type' => 'required|string|max:255',
-            'gender' => 'required|string|max:255',
-            'age' => 'required|integer',
-            'color' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
-        ]);
+    {
+        try {
+            // Validate request data
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'type' => 'required|string|max:255',
+                'gender' => 'required|string|max:255',
+                'age' => 'required|integer',
+                'color' => 'required|string|max:255',
+                'address' => 'required|string|max:255',
+            ]);
 
-        // Find the pet
-        $pet = Pet::find($id);
+            // Find the pet
+            $pet = Pet::find($id);
 
-        if (!$pet) {
-            return response()->json(['error' => 'Pet not found'], 404);
+            if (!$pet) {
+                return response()->json(['error' => 'Pet not found'], 404);
+            }
+
+            // Update pet details
+            $pet->name = $validatedData['name'];
+            $pet->type = $validatedData['type'];
+            $pet->gender = $validatedData['gender'];
+            $pet->age = $validatedData['age'];
+            $pet->color = $validatedData['color'];
+            $pet->address = $validatedData['address'];
+            $pet->save();
+
+            return response()->json(['message' => 'Pet profile updated successfully', 'pet' => $pet], 200);
+        } catch (ValidationException $e) {
+            return response()->json(['error' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to update pet profile'], 500);
         }
-
-        // Update pet details
-        $pet->name = $validatedData['name'];
-        $pet->type = $validatedData['type'];
-        $pet->gender = $validatedData['gender'];
-        $pet->age = $validatedData['age'];
-        $pet->color = $validatedData['color'];
-        $pet->address = $validatedData['address'];
-        $pet->save();
-
-        return response()->json(['message' => 'Pet profile updated successfully', 'pet' => $pet], 200);
-    } catch (ValidationException $e) {
-        return response()->json(['error' => $e->errors()], 422);
-    } catch (\Exception $e) {
-        return response()->json(['error' => 'Failed to update pet profile'], 500);
     }
-}
-
 
     public function edit()
     {
@@ -115,41 +123,60 @@ class PetController extends Controller
 
     public function giveUpPet($id)
     {
-        $pet = Pet::findOrFail($id);
-        $pet->adoption_status = Pet::ADOPTION_AVAILABLE;
-        $pet->save();
+        try {
+            $pet = Pet::findOrFail($id);
+            $pet->adoption_status = Pet::ADOPTION_AVAILABLE;
+            $pet->save();
 
-        return response()->json(['message' => 'Pet is now available for adoption.']);
+            return response()->json(['message' => 'Pet is now available for adoption.']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to update pet adoption status'], 500);
+        }
     }
-
-    // PetController.php
 
     public function getAdoptablePets()
     {
         try {
             $adoptablePets = Pet::where('adoption_status', Pet::ADOPTION_AVAILABLE)->get();
-    
+
             if ($adoptablePets->isEmpty()) {
                 return response()->json(['message' => 'No adoptable pets found'], 404);
             }
-    
+
             return response()->json(['pets' => $adoptablePets], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to fetch adoptable pets'], 500);
         }
     }
-    public function requestAdoption($id)
-    {
-        $pet = Pet::findOrFail($id);
-        $pet->adoption_status = Pet::ADOPTION_PENDING;
-        $pet->save();
 
-        $petOwner = $pet->owner;
-        $requester = auth()->user();
-        $petOwner->notify(new AdoptionRequestNotification($pet, $requester));
+    // Request adoption for a specific pet
+    public function requestAdoption(Request $request, $id)
+{
+    $userID = Auth::id(); // The ID of the authenticated Petowner
+    $petId = $id;
 
-        return response()->json(['message' => 'Adoption request sent.']);
-    }
+    // Validate the request data
+    $request->validate([
+        'message' => 'required|string|max:255',
+    ]);
+
+    // Create a new adoption request
+    $adoptionRequest = AdoptionRequest::create([
+        'user_id' => $userID,
+        'pet_id' => $petId,
+        'message' => $request->input('message'),
+    ]);
+
+    // Find the pet owner (Petowner) associated with the pet
+    $petowner = Pet::find($petId)->owner;
+
+    // Notify the pet owner about the adoption request
+    Log::info('Sending notification to pet owner', ['petowner_id' => $petowner->id, 'adoption_request_id' => $adoptionRequest->id]);
+
+    $petowner->notify(new AdoptionRequestNotification($adoptionRequest));
+
+    return response()->json(['message' => 'Adoption request sent successfully', 'adoptionRequest' => $adoptionRequest], 201);
+}
 }
 
 

@@ -3,53 +3,48 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Pet; // Add this line
+use App\Models\Petowner;
 use App\Models\AdoptionRequest;
-use App\Models\Pet;
-use Illuminate\Support\Facades\Auth;
+use App\Notifications\RequestStatusNotification;
+
+use App\Notifications\AdoptionRequestAccepted;
+use App\Notifications\AdoptionRequestRejected;
 
 class AdoptionController extends Controller
 {
-    public function index()
+    public function accept($adoptionRequestId)
     {
-        $pets = Pet::where('is_up_for_adoption', true)->get();
-        return response()->json($pets);
+        $adoptionRequest = AdoptionRequest::findOrFail($adoptionRequestId);
+
+        // Update the pet status to 'unavailable'
+        $pet = Pet::find($adoptionRequest->pet_id);
+        $pet->adoption_status = 'unavailable';
+        $pet->save();
+
+        // Update the adoption request status to 'accepted'
+        $adoptionRequest->status = 'accepted';
+        $adoptionRequest->save();
+
+        // Notify the user who made the request
+        $user = Petowner::find($adoptionRequest->user_id);
+        $user->notify(new RequestStatusNotification($adoptionRequest, 'accepted'));
+
+        return response()->json(['message' => 'Adoption request accepted successfully']);
     }
 
-    public function requestAdoption(Request $request, $id)
+    public function reject($adoptionRequestId)
     {
-        $pet = Pet::findOrFail($id);
+        $adoptionRequest = AdoptionRequest::findOrFail($adoptionRequestId);
 
-        $adoptionRequest = AdoptionRequest::create([
-            'user_id' => Auth::id(),
-            'pet_id' => $pet->id,
-            'status' => 'pending',
-        ]);
+        // Update the adoption request status to 'rejected'
+        $adoptionRequest->status = 'rejected';
+        $adoptionRequest->save();
 
-        return response()->json(['message' => 'Adoption request sent', 'request' => $adoptionRequest]);
-    }
+        // Notify the user who made the request
+        $user = Petowner::find($adoptionRequest->user_id);
+        $user->notify(new RequestStatusNotification($adoptionRequest, 'rejected'));
 
-    public function approveAdoption(Request $request, $id)
-    {
-        $adoptionRequest = AdoptionRequest::findOrFail($id);
-
-        $this->authorize('update', $adoptionRequest->pet);
-
-        $adoptionRequest->update(['status' => 'approved']);
-
-        // Transfer pet ownership logic
-        $adoptionRequest->pet->update(['user_id' => $adoptionRequest->user_id, 'is_up_for_adoption' => false]);
-
-        return response()->json(['message' => 'Adoption request approved']);
-    }
-
-    public function rejectAdoption(Request $request, $id)
-    {
-        $adoptionRequest = AdoptionRequest::findOrFail($id);
-
-        $this->authorize('update', $adoptionRequest->pet);
-
-        $adoptionRequest->update(['status' => 'rejected']);
-
-        return response()->json(['message' => 'Adoption request rejected']);
+        return response()->json(['message' => 'Adoption request rejected successfully']);
     }
 }

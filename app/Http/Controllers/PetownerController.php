@@ -12,6 +12,13 @@ use Illuminate\Support\Facades\Auth;
 
 class PetownerController extends Controller
 {
+
+    // Example controller method to fetch notifications
+public function notifications()
+{
+    $user = auth('Petowner-api')->user();
+        return response()->json($user->notifications);
+}
     public function pets()
     {
         return $this->hasMany(Pet::class);

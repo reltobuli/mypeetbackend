@@ -10,7 +10,15 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
-
+    public function routeNotificationForDatabase()
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'email' => $this->email,
+            // Add any other fields required by your notifications
+        ];
+    }
     /**
      * The attributes that are mass assignable.
      *

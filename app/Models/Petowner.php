@@ -12,7 +12,12 @@ class Petowner extends Authenticatable
     
     use HasFactory, Notifiable, HasApiTokens;
 
- 
+
+    public function adoptionRequests()
+{
+    return $this->hasMany(AdoptionRequest::class);
+}
+  
     protected $fillable = [
        'fullname',
        'phone_number',
@@ -20,7 +25,8 @@ class Petowner extends Authenticatable
        'gender',
        'email',
        'city',
-       'password'
+       'password',
+       'user_id',
     ];
     protected $hidden = [
         'password',

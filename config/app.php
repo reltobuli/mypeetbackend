@@ -49,7 +49,6 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-    
 
         /*
          * Package Service Providers...
@@ -62,7 +61,9 @@ return [
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
        // App\Providers\EventServiceProvider::class,
-        App\Providers\RouteServiceProvider::class, // Ensure this line is present
+        App\Providers\RouteServiceProvider::class, 
+        App\Providers\NotificationServiceProvider::class,
+        // Ensure this line is present
     ],
 
     // ... other configurations ...
