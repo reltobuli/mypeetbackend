@@ -24,7 +24,7 @@ Route::middleware('auth:Petowner-api')->get('/notifications', function () {
 Route::get('/pets/adoptable', [PetController::class, 'getAdoptablePets']);
 Route::get('/missing-pets', [MissingPetController::class, 'index']);
 Route::get('instructions', [InstructionController::class, 'showInstructions']);
-Route::get('/qrcode', [QRCodeController::class, 'generate']);
+Route::get('/qrcode/{id}', [QRCodeController::class, 'show']);
 Route::get('shelters', [InformationController::class, 'listShelters']);
 Route::get('veterinaries', [InformationController::class, 'listVeterinaries']);
 
@@ -45,16 +45,15 @@ Route::group(['prefix' => 'Petowner'], function () {
         Route::post('pets', [PetController::class, 'store']);
         Route::get('pets/user/{userId}', [PetController::class, 'getPetByUserId']);
         Route::get('/pets', [PetController::class, 'getPets']);
-        Route::put('/pets/profile/update/{id}', [PetController::class, 'update']);
+        Route::post('/pets/profile/update/{id}', [PetController::class, 'update']);
         Route::get('pets/{id}', [PetController::class, 'show'])->name('pets.show');
         Route::post('/pets/{id}/give-up', [PetController::class, 'giveUpPet']);
         Route::post('/pets/{id}/request-adoption', [PetController::class, 'requestAdoption']); // Add this line
         Route::get('/user/notifications', [NotificationController::class, 'Notifications']);
         Route::post('/adoption-requests/{adoptionRequestId}/accept', [AdoptionController::class, 'accept']);
         Route::post('/adoption-requests/{adoptionRequestId}/reject', [AdoptionController::class, 'reject']);
-    
-        Route::post('adoption/accept/{id}', [AdoptionController::class, 'acceptRequest']);
-        Route::post('/adoption-requests/{id}/reject', [AdoptionController::class, 'rejectRequest']);
+     
+        
         Route::get('/petowner/notifications', [PetownerController::class, 'notifications']);
     });
 });

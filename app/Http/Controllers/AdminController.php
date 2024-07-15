@@ -117,7 +117,7 @@ public function deleteVeterinaryCenter($id)
 public function editShelter($id)
 {
     $shelter = Shelter::findOrFail($id);
-    return view('admin.edit_shelter', compact('shelter'));
+    return view('admin.shelters.edit', compact('shelter'));
 }
 
 public function updateShelter(Request $request, $id)

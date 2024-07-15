@@ -17,7 +17,11 @@ class Petowner extends Authenticatable
 {
     return $this->hasMany(AdoptionRequest::class);
 }
-  
+public function pets()
+{
+    return $this->hasMany(Pet::class, 'user_id');
+}
+
     protected $fillable = [
        'fullname',
        'phone_number',

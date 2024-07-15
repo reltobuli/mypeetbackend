@@ -31,7 +31,10 @@ class Pet extends Model
     {
         return $this->belongsTo(Petowner::class, 'user_id');
     }
-
+    public function petowner()
+    {
+        return $this->belongsTo(Petowner::class);
+    }
     // Example method: Scope to retrieve pets with a specific adoption status
     public function scopeByAdoptionStatus($query, $status)
     {

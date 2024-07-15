@@ -26,7 +26,7 @@ class PetController extends Controller
         return response()->json(['pets' => $pets]);
     }
 
-
+    
     public function show($id)
     {
         $pet = Pet::find($id);
@@ -41,12 +41,25 @@ class PetController extends Controller
     public function getPetsForCurrentUser()
     {
         try {
-            $user = Auth::guard('Petowner-api')->user(); // Retrieve authenticated user
-            if (!$user) {
+            Log::info('Fetching current user for Petowner-api guard');
+            $petowner = Auth::guard('Petowner-api')->user(); // Retrieve authenticated user
+            
+            if (!$petowner) {
+                Log::warning('User not authenticated');
                 return response()->json(['error' => 'User not authenticated'], 401);
             }
 
-            $pets = $user->pets; // Fetch pets associated with the user
+            Log::info('User authenticated: ' . $petowner->id);
+
+            // Initialize pets as an empty collection if it is null
+            $pets = $petowner->pets ?? collect(); 
+
+            if ($pets->isEmpty()) {
+                Log::info('No pets found for user: ' . $petowner->id); // Debugging statement
+                return response()->json(['pets' => []], 200); // Return empty array instead of null
+            }
+
+            Log::info('Pets found for user: ' . $petowner->id . ' - ' . $pets); // Debugging statement
 
             return response()->json(['pets' => $pets], 200);
         } catch (\Exception $e) {
@@ -54,7 +67,7 @@ class PetController extends Controller
             return response()->json(['error' => 'An error occurred while fetching pets'], 500);
         }
     }
-
+    
     public function update(Request $request, $id)
     {
         try {
@@ -66,8 +79,15 @@ class PetController extends Controller
                 'age' => 'required|integer',
                 'color' => 'required|string|max:255',
                 'address' => 'required|string|max:255',
+                'picture' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             ]);
-
+            if ($request->hasFile('picture')) {
+                $file = $request->file('picture');
+                $path = $file->store('public/pictures');
+                $fileName = basename($path);
+            } else {
+                return response()->json(['message' => 'Picture not uploaded'], 400);
+            }
             // Find the pet
             $pet = Pet::find($id);
 
@@ -82,6 +102,8 @@ class PetController extends Controller
             $pet->age = $validatedData['age'];
             $pet->color = $validatedData['color'];
             $pet->address = $validatedData['address'];
+            $pet->picture = $fileName;
+
             $pet->save();
 
             return response()->json(['message' => 'Pet profile updated successfully', 'pet' => $pet], 200);

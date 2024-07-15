@@ -4,11 +4,12 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Messages\DatabaseMessage;
 
 class RequestStatusNotification extends Notification
 {
+    use Queueable;
+
     protected $adoptionRequest;
     protected $status;
 
@@ -20,26 +21,15 @@ class RequestStatusNotification extends Notification
 
     public function via($notifiable)
     {
-        return ['database'];
-    }
-
-    public function toDatabase($notifiable)
-    {
-        return [
-            'adoption_request_id' => $this->adoptionRequest->id,
-            'pet_name' => $this->adoptionRequest->pet->name,
-            'message' => 'Your adoption request has been ' . $this->status,
-            'status' => $this->status,
-        ];
+        return ['database']; // or ['mail', 'database'] if using multiple channels
     }
 
     public function toArray($notifiable)
     {
         return [
             'adoption_request_id' => $this->adoptionRequest->id,
-            'pet_name' => $this->adoptionRequest->pet->name,
-            'message' => 'Your adoption request has been ' . $this->status,
-            'status' => $this->status,
+            'pet_name' => $this->adoptionRequest->pet->name, // assuming the pet has a name attribute
+            'message' => "Your adoption request has been {$this->status}.",
         ];
     }
 }

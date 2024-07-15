@@ -16,24 +16,29 @@ class QRCodeController extends Controller
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json(['message' => 'Pet not found'], 404);
         }
-
+    
         // Check if the pet has an owner
         if (!$pet->owner) {
             return response()->json(['message' => 'Owner not found for this pet'], 404);
         }
-
-        // Generate QR code
-        $qrCode = QrCode::size(300)->generate(json_encode([
+    
+        // Create a URL with pet information
+        $url = json_encode([
             'name' => $pet->name,
             'type' => $pet->type,
             'owner' => $pet->owner->name,
             'contact' => $pet->owner->email, // Assuming the contact is the owner's email
-        ]));
-
+        ]);
+    
+        // Generate QR code
+        $qrCode = QrCode::size(300)->generate($url);
+    
         // Return QR code as response
         return response($qrCode)->header('Content-Type', 'image/svg+xml');
     }
+    
 }
+
 
 
 

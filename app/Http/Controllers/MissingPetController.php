@@ -27,6 +27,9 @@ class MissingPetController extends Controller
             'qrcode' => 'required|string|max:255',
             'picture' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'pet_id' => 'required|integer',
+            'phone_number' => 'required|string|max:255',
+
+            
         ]);
 
         if ($validator->fails()) {
@@ -51,6 +54,7 @@ class MissingPetController extends Controller
             $missingPet->address = $request->address;
             $missingPet->qrcode = $request->qrcode;
             $missingPet->pet_id = $request->pet_id;
+            $missingPet->phone_number = $request->phone_number;
             $missingPet->picture = $imageName;
             $missingPet->save();
 
@@ -77,6 +81,8 @@ class MissingPetController extends Controller
                     'address' => (string) $pet->address,
                     'qrcode' => (string) $pet->qrcode,
                     'pet_id' => (string) $pet->pet_id,
+                    'phone_number' => (string) $pet->phone_number,
+                  
                 ];
             });
 
