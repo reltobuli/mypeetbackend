@@ -35,8 +35,12 @@ class AuthController extends Controller
             'city' => $request->city,
             'password' => Hash::make($request->password),
         ]);
-
-        return response()->json(['message' => 'Pet owner registered successfully', 'petowner' => $petowner], 201);
+        $token = $petowner->createToken('auth_token')->plainTextToken;
+        return response()->json([
+            'message' => 'registered successful',
+            'token' => $token,
+            'user' => $petowner, // Include user details here
+        ], 200);
     }
 
     public function login(Request $request)

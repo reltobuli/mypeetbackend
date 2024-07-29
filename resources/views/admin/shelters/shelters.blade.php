@@ -37,21 +37,27 @@
     </div>
 
     <!-- List of Shelters -->
+    <div class="row">
     @foreach ($shelters as $shelter)
-    <div class="card">
-        <h2>{{ $shelter->name }}</h2>
-        <p>Location: {{ $shelter->location }}</p>
-        <p>Capacity: {{ $shelter->capacity }} animals</p>
-        <p>Address: {{ $shelter->address }}</p>
-        <p>Phone Number: {{ $shelter->phone_number }}</p>
-        <p>City: {{ $shelter->city }}</p>
-        <a href="{{ route('admin.shelters.edit', $shelter->id) }}" class="button">Edit</a>
-        <form action="{{ route('admin.shelters.delete', $shelter->id) }}" method="POST" style="display:inline;">
-            @csrf
-            @method('DELETE')
-            <button type="submit" class="button">Delete</button>
-        </form>
-    </div>
+        <div class="col-md-6 col-lg-4 mb-3">
+            <div class="cute-card">
+                <div class="card-body">
+                    <h2 class="card-title">{{ $shelter->name }}</h2>
+                    <p class="card-text">Location: {{ $shelter->location }}</p>
+                    <p class="card-text">Capacity: {{ $shelter->capacity }} animals</p>
+                    <p class="card-text">Address: {{ $shelter->address }}</p>
+                    <p class="card-text">Phone Number: {{ $shelter->phone_number }}</p>
+                    <p class="card-text">City: {{ $shelter->city }}</p>
+                    <a href="{{ route('admin.shelters.edit', $shelter->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                    <form action="{{ route('admin.shelters.delete', $shelter->id) }}" method="POST" style="display:inline;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     @endforeach
 </div>
-@endsection
+
+

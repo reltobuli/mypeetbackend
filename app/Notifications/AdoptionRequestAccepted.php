@@ -2,44 +2,40 @@
 
 namespace App\Notifications;
 
-use App\Models\AdoptionRequest;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
 class AdoptionRequestAccepted extends Notification
 {
     use Queueable;
 
-    public function acceptAdoptionRequest($adoptionRequestId)
-{
-    $adoptionRequest = AdoptionRequest::findOrFail($adoptionRequestId);
-    // Perform logic to accept the adoption request
-
-    // Notify the pet owner that their adoption request has been accepted
-    $adoptionRequest->petowner->notify(new AdoptionRequestAccepted($adoptionRequest));
-
-    return response()->json(['message' => 'Adoption request accepted']);
-}
     protected $adoptionRequest;
 
-    public function __construct(AdoptionRequest $adoptionRequest)
+    public function __construct($adoptionRequest)
     {
         $this->adoptionRequest = $adoptionRequest;
     }
 
     public function via($notifiable)
     {
-        return ['database']; // You can add other channels like 'mail', 'slack', etc.
+        return ['mail', 'database'];
     }
 
-    public function toDatabase($notifiable)
+    public function toMail($notifiable)
+    {
+        return (new MailMessage)
+                    ->line('Your adoption request has been accepted.')
+                    ->action('View Request', url('/adoption-requests/'.$this->adoptionRequest->id))
+                    ->line('Thank you for using our application!');
+    }
+
+    public function toArray($notifiable)
     {
         return [
-            'message' => 'Your adoption request has been accepted.',
-            'adoption_request_id' => $this->adoptionRequest->id,
-            // Add any other data you want to include in the notification
+            'id' => $this->adoptionRequest->id,
+            'pet_name' => $this->adoptionRequest->pet->name,
+            'message' => 'Your adoption request has been accepted.'
         ];
     }
 }

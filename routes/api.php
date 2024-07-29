@@ -5,7 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PetownerController;
 use App\Http\Controllers\MissingPetController; // Corrected controller reference
 use App\Http\Controllers\PetController;
-use App\Http\Controllers\QRCodeController;
+use App\Http\Controllers\QrCodeController;
 use App\Http\Controllers\InformationController;
 use App\Http\Controllers\InstructionController;
 use App\Http\Controllers\NotificationController;
@@ -24,7 +24,7 @@ Route::middleware('auth:Petowner-api')->get('/notifications', function () {
 Route::get('/pets/adoptable', [PetController::class, 'getAdoptablePets']);
 Route::get('/missing-pets', [MissingPetController::class, 'index']);
 Route::get('instructions', [InstructionController::class, 'showInstructions']);
-Route::get('/qrcode/{id}', [QRCodeController::class, 'show']);
+Route::get('/qrcode', [QrCodeController::class, 'generate']);
 Route::get('shelters', [InformationController::class, 'listShelters']);
 Route::get('veterinaries', [InformationController::class, 'listVeterinaries']);
 

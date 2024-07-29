@@ -79,15 +79,9 @@ class PetController extends Controller
                 'age' => 'required|integer',
                 'color' => 'required|string|max:255',
                 'address' => 'required|string|max:255',
-                'picture' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+             
             ]);
-            if ($request->hasFile('picture')) {
-                $file = $request->file('picture');
-                $path = $file->store('public/pictures');
-                $fileName = basename($path);
-            } else {
-                return response()->json(['message' => 'Picture not uploaded'], 400);
-            }
+           
             // Find the pet
             $pet = Pet::find($id);
 
@@ -102,7 +96,7 @@ class PetController extends Controller
             $pet->age = $validatedData['age'];
             $pet->color = $validatedData['color'];
             $pet->address = $validatedData['address'];
-            $pet->picture = $fileName;
+            
 
             $pet->save();
 

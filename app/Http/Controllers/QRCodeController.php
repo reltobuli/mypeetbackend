@@ -4,40 +4,28 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
-use App\Models\Pet;
 
-class QRCodeController extends Controller
+class QrCodeController extends Controller
 {
-    public function show($id)
+    public function generate(Request $request)
     {
-        // Fetch pet data by ID, handle case if pet is not found
-        try {
-            $pet = Pet::with('owner')->findOrFail($id);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return response()->json(['message' => 'Pet not found'], 404);
-        }
-    
-        // Check if the pet has an owner
-        if (!$pet->owner) {
-            return response()->json(['message' => 'Owner not found for this pet'], 404);
-        }
-    
-        // Create a URL with pet information
-        $url = json_encode([
-            'name' => $pet->name,
-            'type' => $pet->type,
-            'owner' => $pet->owner->name,
-            'contact' => $pet->owner->email, // Assuming the contact is the owner's email
+        $request->validate([
+            'pet_name' => 'required|string|max:255',
         ]);
-    
-        // Generate QR code
-        $qrCode = QrCode::size(300)->generate($url);
-    
-        // Return QR code as response
-        return response($qrCode)->header('Content-Type', 'image/svg+xml');
+
+        $petName = $request->input('pet_name');
+        $qrCode = QrCode::format('png')->size(300)->generate($petName);
+
+        return response($qrCode)->header('Content-type', 'image/png');
     }
-    
 }
+
+
+
+
+
+
+
 
 
 

@@ -21,7 +21,7 @@ class AdoptionRequestRejected extends Notification
 
     public function via($notifiable)
     {
-        return ['database']; // You can add other channels like 'mail', 'slack', etc.
+        return ['database']; 
     }
 
     public function toDatabase($notifiable)

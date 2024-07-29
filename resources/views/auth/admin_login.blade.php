@@ -8,34 +8,36 @@
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 </head>
 <body>
-    <div class="login-container">
-        <h1>Admin Login</h1>
-        <form method="POST" action="{{ route('admin.login.submit') }}">
-            @csrf
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" name="email" id="email" required autofocus>
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" name="password" id="password" required>
-            </div>
-            <div class="form-group">
-                <label for="remember">
-                    <input type="checkbox" name="remember" id="remember"> Remember Me
-                </label>
-            </div>
-            <button type="submit" class="button">Login</button>
-        </form>
-        @if ($errors->any())
-            <div class="error-messages">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div> 
-        @endif
+    <div class="login-page">
+        <div class="login-container">
+            <h1>Admin Login</h1>
+            <form method="POST" action="{{ route('admin.login.submit') }}">
+                @csrf
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email" required autofocus>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="remember">
+                        <input type="checkbox" name="remember" id="remember"> Remember Me
+                    </label>
+                </div>
+                <button type="submit" class="button">Login</button>
+            </form>
+            @if ($errors->any())
+                <div class="error-messages">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div> 
+            @endif
+        </div>
     </div>
 </body>
 </html>

@@ -53,6 +53,7 @@ return [
         /*
          * Package Service Providers...
          */
+        SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
         Laravel\Sanctum\SanctumServiceProvider::class,
         /*
          * Application Service Providers...
@@ -65,7 +66,10 @@ return [
         App\Providers\NotificationServiceProvider::class,
         // Ensure this line is present
     ],
-
+    'aliases' => [
+        // Other Facades
+        'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
+    ],
     // ... other configurations ...
 
 

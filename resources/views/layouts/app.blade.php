@@ -8,17 +8,7 @@
 </head>
 <body>
     <div class="app">
-        <aside class="sidebar">
-            <!-- Sidebar content (home, notifications, profile, settings) -->
-            <nav>
-                <ul>
-                    <li><a href="{{ route('admin.index') }}">Home</a></li>
-                    <li><a href="#">Notifications</a></li>
-                    <li><a href="{{ route('admin.profile') }}">Profile</a></li>
-                    <li><a href="#">Settings</a></li>
-                </ul>
-            </nav>
-        </aside>
+       
         <main class="main-content">
             @yield('content')
         </main>

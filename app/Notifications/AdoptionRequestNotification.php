@@ -30,16 +30,4 @@ class AdoptionRequestNotification extends Notification
             'adopter_id' => $this->adoptionRequest->user_id,
         ];
     }
-
-    public function toArray($notifiable)
-    {
-        return [
-            'adoption_request_id' => $this->adoptionRequest->id,
-            'pet_name' => $this->adoptionRequest->pet->name,
-            'message' => $this->adoptionRequest->message,
-            'adopter_id' => $this->adoptionRequest->user_id,
-        ];
-    }
-
-    
 }

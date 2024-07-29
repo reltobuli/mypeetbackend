@@ -1,95 +1,252 @@
+/* Global Styles */
 body {
     font-family: Arial, sans-serif;
-    background-color: #F39EBD;
+    background-color: #f8eff8; /* Light background color for a cleaner look */
     margin: 0;
     padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensure full viewport height */
 }
 
-.sidebar {
-    width: 150px; /* Reduced the width from 250px to 200px */
-    height: 100%;
-    position: fixed;
-    background-color: #03857D;
-    color: #ffffff;
-    padding: 20px;
+/* Main Content */
+.main-content {
+    margin-left: 230px; /* Margin equal to the sidebar width */
+    padding: 2rem; /* Adjust as needed for spacing */
+    background-color: #f8eff8; /* Light background color for content */
+    flex: 1; /* Allow the main content to take up remaining space */
+    display: flex; /* Enable flexbox layout */
+    flex-direction: column; /* Arrange children in a column */
 }
 
-.sidebar h2 {
-    text-align: center;
+/* Header */
+.header {
+    padding-left: 50px ;
+    display: flex;
+    text-align: center; /* Center align text */
+    margin-bottom: 2rem; /* Space below the header */
+    flex-shrink: 0; /* Prevent the header from shrinking */
 }
 
-.sidebar ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-.sidebar ul li {
-    margin: 20px 0;
-}
-
-.sidebar ul li a {
-    color: #fff;
-    text-decoration: none;
-    display: block;
-    padding: 10px;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-}
-
-.sidebar ul li a:hover {
-    background-color: #555;
-}
-
-.content {
-    margin-left: 220px; /* Adjusted the margin-left from 270px to 220px to match the new sidebar width */
-    padding: 20px;
-}
-
-.container {
-    max-width: 600px;
-    margin: 0 auto;
-    background-color: #fff;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
+/* Additional Styling for Card */
 .card {
-    border: 1px solid #ccc;
-    padding: 20px;
-    margin: 20px 0;
-    border-radius: 5px;
-    background-color: #f9f9f9;
+    border: 1px solid #e1e5e9;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    margin: 1rem;
+    background-color: #ffffff;
+    text-align: center; /* Center text inside the card */
+}
+
+/*veter */
+.row {
+    display: flex; /* Enable flexbox */
+    flex-wrap: wrap; /* Allow wrapping to the next line */
+    justify-content: center; /* Center items horizontally */
+    margin: 0 -1rem; /* Adjust negative margin if needed */
+}
+.col-md-6, .col-lg-4 {
+    padding: 0 1rem; /* Adjust padding as needed */
+}
+
+/* Sidebar */
+.sidebar {
+    height: 100vh; /* Full viewport height */
+    position: fixed; /* Fixed positioning for sidebar */
+    top: 0;
+    left: 0;
+    width: 250px; /* Fixed width for sidebar */
+    background-color: #ffffff; /* White background for sidebar */
+    border-right: 1px solid #e0e0e0; /* Subtle border for separation */
+    z-index: 1000; /* Ensure it's above other content */
+    overflow-y: auto; /* Enable scrolling if content overflows */
+    padding: 1rem;
+  
+    box-sizing: border-box; /* Ensure padding and border are included in the element's total width and height */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Soft shadow for a subtle lift effect */
+}
+a {
+    text-decoration: none; /* Remove underline */
+    color: inherit; /* Inherit the color from parent element */
+    font-family: Arial, sans-serif; /* Set font family */
+    font-size: 1rem; /* Set font size */
+    font-weight: normal; /* Set font weight */
+}
+
+/* Sidebar Header */
+.sidebar-header {
+    margin-bottom: 1.5rem;
+}
+
+.sidebar-header h4 {
+    font-size: 1.5rem; /* Slightly larger font size for header */
+    color: #03857D; /* Primary color for the header */
+    margin: 0;
+    padding: 0.5rem 0; /* Padding for spacing */
+    border-bottom: 2px solid #03857D; /* Underline for emphasis */
+}
+
+/* Navigation Links */
+.nav-link {
+    color: #333; /* Dark text color for links */
+    padding: 0.75rem 1.25rem; /* Increased padding for better click area */
+    border-radius: 8px; /* More rounded corners for a modern look */
+    transition: background-color 0.3s, color 0.3s;
+    text-decoration: none; /* Remove underline */
+    display: block; /* Block display for better click area */
+    margin-bottom: 0.5rem; /* Space between links */
+    font-weight: 500; /* Slightly bolder font weight */
+}
+ 
+.nav-link:hover {
+    background-color: #e0f7fa; /* Light blue hover effect */
+    color: #03857D; /* Change text color on hover */
+}
+
+/* Form Container */
+.form-container {
+    background-color: #ffffff; /* White background */
+    padding: 2rem;
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    margin: 2rem auto; /* Center horizontally with margin */
+    max-width: 800px; /* Limit the width */
+}
+
+/* Form Elements */
+.form-group label {
+    font-weight: 600; /* Slightly bolder font weight */
+ margin: 2rem auto;    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.form-control {
+    border-radius: 0.25rem; /* Rounded corners */
+    border: 1px solid #ced4da; /* Light border */
+    padding: 0.75rem; /* Increased padding for comfort */
+}
+
+/* Button Styles */
+.btn, .button {
+    display: inline-block;
+    padding: 0.75rem 1.5rem; /* Increased padding for better click area */
+    font-size: 0.875rem; /* Slightly larger font size */
+    color: #ffffff;
+    background-color: #03857D; /* Main button color */
+    border: none;
+    border-radius: 8px; /* More rounded corners for a modern look */
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.2s;
+    margin: 0.25rem; /* Small margin around buttons */
+}
+
+.btn-primary, .button-primary {
+    background-color: #03857D; /* Primary button color */
+}
+
+.btn-primary:hover, .button-primary:hover {
+    background-color: #026a61; /* Darker shade on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+}
+
+/* Card Styling */
+.cute-card, .card {
+    border: 1px solid #e1e5e9; /* Light border color for the card */
+    border-radius: 10px; /* More rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    transition: transform 0.2s, box-shadow 0.2s;
+    overflow: hidden;
+    max-width: 320px; /* Adjusted card width */
+    width: 100%; /* Ensure card fits within its container */
+    margin: 1rem; /* Space between cards */
+}
+
+.cute-card:hover, .card:hover {
+    transform: translateY(-4px); /* Slight lift effect */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+}
+
+.card-body {
+    padding: 1rem;
+    align-items: center; /* Consistent padding */
+}
+
+.card-title, .card h2 {
+    font-size: 1.25rem; /* Slightly larger title */
+    color: #333; /* Dark text color for better readability */
+    margin-bottom: 0.5rem;
+}
+
+.card-text, .card p {
+    font-size: 0.875rem; /* Slightly larger text */
+    color: #666; /* Slightly lighter text color */
+    margin-bottom: 0.5rem;
+}
+
+/* Login Page Styles */
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f9f9f9; /* Light background color */
+}
+
+.login-container {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 10px; /* More rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+}
+
+h1 {
+    margin-bottom: 1.5rem;
+    color: #03857D; /* Primary color */
+    text-align: center;
+    font-size: 1.75rem; /* Larger heading font size */
 }
 
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 1rem;
+    width: 400;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 5px;
+    margin-bottom: 0.5rem;
+    color: #333;
 }
 
 .form-group input {
-    width: 50%;
-    padding: 10px;
+    width: 100%;
+    padding: 0.75rem;
     border: 1px solid #ccc;
     border-radius: 5px;
+    box-sizing: border-box;
 }
 
-.button {
-    display: inline-block;
-    padding: 10px 20px;
-    color: #0e0606;
-    background-color: #e5eef9;
-    border: none;
+/* Error Messages */
+.error-messages {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
     border-radius: 5px;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none;
-    transition: background-color 0.3s;
 }
 
-.button:hover {
-    background-color: #03857D;
+.error-messages ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
 }
+
+.error-messages li {
+    margin: 0.5rem 0;
+}
+
